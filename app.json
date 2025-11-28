@@ -1,0 +1,45 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/menu/list",
+    "pages/cart/cart",
+    "pages/order-list/order-list"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "卢家小炒",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#D4380D",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "/images/tabbar/home.png",
+        "selectedIconPath": "/images/tabbar/home_active.png"
+      },
+      {
+        "pagePath": "pages/menu/list",
+        "text": "菜单",
+        "iconPath": "/images/tabbar/menu.png",
+        "selectedIconPath": "/images/tabbar/menu_active.png"
+      },
+      {
+        "pagePath": "pages/cart/cart",
+        "text": "购物车",
+        "iconPath": "/images/tabbar/cart.png",
+        "selectedIconPath": "/images/tabbar/cart_active.png"
+      },
+      {
+        "pagePath": "pages/order-list/order-list",
+        "text": "订单",
+        "iconPath": "/images/tabbar/order.png",
+        "selectedIconPath": "/images/tabbar/order_active.png"
+      }
+    ]
+  }
+}

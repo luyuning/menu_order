@@ -1,0 +1,14 @@
+.container { padding: 20rpx; background: #f5f5f5; min-height: 100vh; }
+.header { font-size: 36rpx; font-weight: bold; padding: 20rpx 0; }
+.order-item { 
+  background: #fff; margin-bottom: 20rpx; padding: 30rpx; border-radius: 16rpx; 
+  display: flex; justify-content: space-between; align-items: center;
+}
+.no { font-weight: bold; }
+.time { font-size: 28rpx; color: #999; margin: 10rpx 0; }
+.status { font-size: 24rpx; padding: 4rpx 12rpx; border-radius: 8rpx; }
+.status.pending { background: #fffbe6; color: #d46b08; }
+.total { font-size: 40rpx; font-weight: bold; color: #e93a3a; }
+.count { font-size: 28rpx; color: #999; }
+.arrow { margin-left: 20rpx; color: #ccc; }
+.empty { text-align: center; padding: 100rpx 0; color: #999; }

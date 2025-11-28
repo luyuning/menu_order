@@ -1,0 +1,17 @@
+/* pages/cart/cart.wxss */
+.cart-container { padding-bottom: 120rpx; }
+.title { padding: 40rpx; text-align: center; font-size: 40rpx; font-weight: bold; }
+.item { display: flex; padding: 30rpx; background: #fff; margin-bottom: 20rpx; }
+.thumb { width: 160rpx; height: 160rpx; margin-right: 20rpx; border-radius: 16rpx; }
+.info { flex: 1; }
+.name { font-size: 34rpx; }
+.price { color: #ff4444; font-weight: bold; }
+.ops { display: flex; align-items: center; }
+.ops button { width: 60rpx; height: 60rpx; line-height: 60rpx; padding: 0; }
+.count { margin: 0 20rpx; min-width: 60rpx; text-align: center; }
+.footer { position: fixed; bottom: 0; left: 0; right: 0; height: 100rpx; background: #fff; 
+  display: flex; align-items: center; justify-content: space-between; padding: 0 40rpx; 
+  border-top: 1px solid #eee; }
+.total { font-size: 40rpx; font-weight: bold; color: #ff4444; }
+.submit { background: #ff4444; color: #fff; padding: 0 60rpx; }
+.empty { text-align: center; padding: 200rpx 0; color: #999; font-size: 36rpx; }

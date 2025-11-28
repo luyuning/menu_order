@@ -1,0 +1,37 @@
+<!-- pages/menu/list.wxml -->
+<view class="menu-container">
+
+<view class="dish-card" wx:for="{{dishList}}" wx:key="id">
+  <!-- 内容区 -->
+  <view class="dish-content">
+    <view class="dish-name">{{item.name}}</view>
+
+    <!-- 配料（默认收起） -->
+    <view class="section">
+      <view class="section-title" bindtap="toggleSection" data-index="{{index}}" data-type="ingredients">
+        配料 <text class="arrow {{item.showIngredients ? 'up' : 'down'}}">></text>
+      </view>
+      <view class="section-content" wx:if="{{item.showIngredients}}">
+        {{item.ingredients || '老板秘方，不外传~'}}
+      </view>
+    </view>
+
+    <!-- 制作方法（默认收起） -->
+    <view class="section">
+      <view class="section-title" bindtap="toggleSection" data-index="{{index}}" data-type="method">
+        制作方法 <text class="arrow {{item.showMethod ? 'up' : 'down'}}">></text>
+      </view>
+      <view class="section-content method-text" wx:if="{{item.showMethod}}">
+        {{item.cooking_method || '大火爆炒，香到你哭！'}}
+      </view>
+    </view>
+
+    <!-- 加入购物车按钮 -->
+    <button class="add-btn" bindtap="addToCart" data-item="{{item}}">+ 加入购物车</button>
+  </view>
+</view>
+
+</view>
+
+<!-- 购物车小红点 -->
+<view class="cart-badge" wx:if="{{cartCount > 0}}">{{cartCount}}</view>

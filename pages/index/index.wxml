@@ -1,0 +1,11 @@
+<view class="home-container">
+  <view class="welcome-text">
+    <!-- 艺术字标题 -->
+    <text class="title art-text">今天想吃点什么呢</text>
+    <!-- 艺术字副标题 -->
+    <text class="subtitle art-subtitle">已经等不及要点餐了吧</text>
+  </view>
+
+  <!-- 渐变按钮 -->
+  <button class="start-btn gradient-btn" bindtap="goMenu">开始点餐</button>
+</view>

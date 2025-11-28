@@ -1,0 +1,96 @@
+.home-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.welcome-text {
+  text-align: center;
+  margin-bottom: 120rpx;
+}
+
+.title {
+  display: block;
+  font-size: 52rpx;
+  font-weight: bold;
+  margin-bottom: 30rpx;
+}
+
+.subtitle {
+  display: block;
+  font-size: 34rpx;
+  line-height: 1.6;
+}
+
+/* 艺术字效果 */
+.art-text {
+  background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 900;
+  text-shadow: 4rpx 4rpx 8rpx rgba(0, 0, 0, 0.2);
+  animation: gradientShift 3s ease infinite;
+  letter-spacing: 2rpx;
+}
+
+.art-subtitle {
+  background: linear-gradient(45deg, #A8FF78, #78FFD6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 600;
+  text-shadow: 2rpx 2rpx 4rpx rgba(0, 0, 0, 0.1);
+  letter-spacing: 1rpx;
+}
+
+.start-btn {
+  position: fixed;
+  bottom: 80rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600rpx;
+  height: 100rpx;
+  line-height: 100rpx;
+  background: linear-gradient(45deg, #FF6B6B, #FFD93D);
+  color: white;
+  border: none;
+  border-radius: 50rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  box-shadow: 0 10rpx 30rpx rgba(255, 107, 107, 0.4);
+  transition: all 0.3s ease;
+}
+
+.start-btn:active {
+  transform: translateX(-50%) scale(0.95);
+  box-shadow: 0 5rpx 15rpx rgba(255, 107, 107, 0.6);
+}
+
+/* 渐变动画 */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20rpx);
+  }
+}

@@ -1,47 +1,43 @@
-<!-- pages/cart/cart.wxml  直接全替换 -->
-<view class="cart-container">
-  <view class="title">我的购物车</view>
+<!-- pages/cart/cart.wxml —— 份数放底部 + 超干净版 -->
+<view class="page">
 
-  <view class="list">
+<!-- 标题栏：只写“已选菜品” -->
+<view class="header">
+  <text class="title">已选菜品</text>
+</view>
+
+
+
+
+
+<!-- 菜品列表 -->
+<scroll-view class="cart-scroll" scroll-y>
+  <view class="cart-list">
     <block wx:for="{{cartList}}" wx:key="id">
-      <view class="item">
-        <image src="{{item.img || '/images/default.jpg'}}" mode="aspectFill" class="thumb"/>
-        <view class="info">
-          <text class="name">{{item.name}}</text>
-          <text class="price">¥{{item.price}}</text>
-        </view>
-        <view class="ops">
-          <button size="mini" bindtap="dec" data-index="{{index}}">-</button>
-          <text class="count">{{item.count}}</text>
-          <button size="mini" bindtap="inc" data-index="{{index}}">+</button>
-        </view>
+      <view class="cart-item">
+        <image src="{{item.image || '/images/default.jpg'}}" class="dish-img" mode="aspectFill" lazy-load/>
+        <view class="name">{{item.name}}</view>
+        <view class="remove-text" bindtap="removeItem" data-index="{{index}}">移除</view>
       </view>
+
+      
     </block>
 
-    <!-- 空购物车提示 -->
-    <view wx:if="{{cartList.length === 0}}" class="empty">
-      购物车还是空的～快去点菜吧！
+    <!-- 空状态 -->
+    <view wx:if="{{cartList.length === 0}}" class="empty-state">
+      <image src="/images/empty-cart.png" class="empty-img" mode="widthFix"/>
+      <text class="tip">还没有选菜哦～</text>
+      <button class="go-menu-btn" open-type="switchTab" url="/pages/menu/menu">去点餐</button>
     </view>
   </view>
+</scroll-view>
 
-<!-- 底部区域：关键改造在这里 -->
-<view class="footer-area">
-    <!-- 有商品时显示结算栏 -->
-    <view class="footer" wx:if="{{cartList.length > 0}}">
-      <view class="total">合计：¥{{totalPrice}}</view>
-      <button class="submit" bindtap="submitOrder">下单去厨房喊</button>
-    </view>
-
-    <!-- 无论购物车空还是不空，“查看订单记录”永远都在！ -->
-    <view class="order-list-btn">
-      <button bindtap="goOrderList" class="btn-order-list">
-        📋 查看订单记录
-      </button>
-    </view>
-
-    <!-- 购物车为空时的额外提示（可选，美观点） -->
-    <view wx:if="{{cartList.length === 0}}" class="empty-tip">
-      购物车空了？<text bindtap="goOrderList" style="color:#e93a3a;padding:0 10rpx;">点这里看看历史订单</text>
-    </view>
+<!-- 底部：份数 + 下单按钮 并排 -->
+<view class="footer" wx:if="{{cartList.length > 0}}">
+  <view class="count-info">
+    已选 <text class="num">{{cartList.length}}</text> 份
   </view>
+  <button class="submit-btn" bindtap="submitOrder">确认下单</button>
+</view>
+
 </view>

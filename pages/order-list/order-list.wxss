@@ -1,14 +1,13 @@
-.container { padding: 20rpx; background: #f5f5f5; min-height: 100vh; }
-.header { font-size: 36rpx; font-weight: bold; padding: 20rpx 0; }
-.order-item { 
-  background: #fff; margin-bottom: 20rpx; padding: 30rpx; border-radius: 16rpx; 
-  display: flex; justify-content: space-between; align-items: center;
-}
-.no { font-weight: bold; }
-.time { font-size: 28rpx; color: #999; margin: 10rpx 0; }
-.status { font-size: 24rpx; padding: 4rpx 12rpx; border-radius: 8rpx; }
-.status.pending { background: #fffbe6; color: #d46b08; }
-.total { font-size: 40rpx; font-weight: bold; color: #e93a3a; }
-.count { font-size: 28rpx; color: #999; }
-.arrow { margin-left: 20rpx; color: #ccc; }
-.empty { text-align: center; padding: 100rpx 0; color: #999; }
+.page{background:#f8f8f8;min-height:100vh}
+.header{padding:40rpx 30rpx;font-size:48rpx;font-weight:bold;background:#fff}
+.list-container{height:calc(100vh-120rpx)}
+.order-card{margin:20rpx 30rpx;padding:40rpx;background:#fff;border-radius:28rpx;position:relative;box-shadow:0 4rpx 20rpx rgba(0,0,0,0.06)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:30rpx}
+.order-id{font-size:34rpx;color:#333;font-weight:500}
+.time{font-size:28rpx;color:#999}
+.dishes{display:flex;flex-wrap:wrap;gap:16rpx 20rpx;align-items:center}
+.tag{background:#f5f5f5;padding:12rpx 28rpx;border-radius:40rpx;font-size:30rpx;color:#333}
+.more{background:#fff0e6;color:#e66c2e;padding:12rpx 24rpx;border-radius:40rpx;font-size:28rpx}
+.extra{margin-top:20rpx;padding-top:20rpx;border-top:1rpx solid #eee;display:flex;flex-wrap:wrap;gap:16rpx 20rpx}
+.arrow{position:absolute;right:32rpx;top:50%;transform:translateY(-50%);font-size:56rpx;color:#ddd}
+.empty{text-align:center;padding-top:300rpx;color:#999;font-size:36rpx}

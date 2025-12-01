@@ -1,9 +1,10 @@
-// pages/order-list/order-list.js  ← 绝对能跑版，直接覆盖
+// pages/order-list/order-list.js —— 终极核弹版（这次绝对成功）
 Page({
   data: {
-    orderList: [],
+    orders: [],
     page: 1,
-    hasMore: true
+    hasMore: true,
+    isLoading: false
   },
 
   onLoad() {
@@ -11,83 +12,93 @@ Page({
   },
 
   onPullDownRefresh() {
-    this.setData({ page: 1, orderList: [], hasMore: true })
-    this.loadOrders().then(() => wx.stopPullDownRefresh())
+    this.setData({ page: 1, orders: [], hasMore: true })
+    this.loadOrders(true).finally(() => wx.stopPullDownRefresh())
   },
 
   onReachBottom() {
-    if (this.data.hasMore) {
-      this.setData({ page: this.data.page + 1 })
-      this.loadOrders()
-    }
+    if (this.data.hasMore && !this.data.isLoading) this.loadOrders()
   },
 
-  loadOrders() {
-    wx.showLoading({ title: '加载中...' })
+  loadOrders(isRefresh = false) {
+    if (this.data.isLoading) return
+    this.setData({ isLoading: true })
+    !isRefresh && wx.showLoading({ title: '加载中...' })
 
-    // 改用最稳定、最通用的查询方式
-    const offset = (this.data.page - 1) * 15
-    const url = `https://fxmfdkzwxbxhixhtvrbq.supabase.co/rest/v1/lyn_orders?select=*,lyn_order_items(*)&order=create_time.desc&limit=15&offset=${offset}`
+    const offset = isRefresh ? 0 : (this.data.page - 1) * 20
 
     wx.request({
-      url: url,
+      url: 'https://fxmfdkzwxbxhixhtvrbq.supabase.co/rest/v1/lyn_order_items',
+      data: {
+        select: 'order_id,create_time,dish_name',
+        order: 'create_time.desc',
+        limit: 20,
+        offset: offset
+      },
       header: {
-        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4bWZka3p3eGJ4aGl4aHR2cmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5NjkxOTgsImV4cCI6MjA3OTU0NTE5OH0.DizVxySHsOZbUOhpkZVLpWDSlpYhEQeZbiH8-20f2z4',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4bWZka3p3eGJ4aGl4aHR2cmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5NjkxOTgsImV4cCI6MjA3OTU0NTE5OH0.DizVxySHsOZbUOhpkZVLpWDSlpYhEQeZbiH8-20f2z4',
-        'Prefer': 'count=exact'
+        apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4bWZka3p3eGJ4aGl4aHR2cmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5NjkxOTgsImV4cCI6MjA3OTU0NTE5OH0.DizVxySHsOZbUOhpkZVLpWDSlpYhEQeZbiH8-20f2z4',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4bWZka3p3eGJ4aGl4aHR2cmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5NjkxOTgsImV4cCI6MjA3OTU0NTE5OH0.DizVxySHsOZbUOhpkZVLpWDSlpYhEQeZbiH8-20f2z4'
       },
       success: (res) => {
-        wx.hideLoading()
-        // 防御性编程：加个判断
-        if (!res.data || !Array.isArray(res.data)) {
-          console.error('订单数据异常', res)
-          wx.showToast({ title: '数据异常', icon: 'error' })
+        if (res.statusCode !== 200 || !res.data) {
+          wx.showToast({ title: '加载失败', icon: 'error' })
+          return
+        }
+
+        const items = res.data
+        if (items.length === 0) {
           this.setData({ hasMore: false })
           return
         }
 
-        const newList = res.data.map(order => {
-          // 安全取明细
-          order.lyn_order_items = order.lyn_order_items || []
-          order.create_time = this.formatTime(order.create_time)
-          return order
+        // 关键分组逻辑
+        const map = {}
+        items.forEach(item => {
+          const id = item.order_id
+          if (!map[id]) {
+            map[id] = {
+              order_id: id,
+              create_time: item.create_time,
+              dish_names: [],
+              expanded: false  // 必须加这一行！
+            }
+          }
+          if (item.dish_name) {
+            map[id].dish_names.push(item.dish_name)
+          }
         })
 
+        const newOrders = Object.values(map)
+
         this.setData({
-          orderList: this.data.page === 1 ? newList : this.data.orderList.concat(newList),
-          hasMore: res.data.length === 15
+          orders: isRefresh ? newOrders : this.data.orders.concat(newOrders),
+          page: isRefresh ? 2 : this.data.page + 1,
+          hasMore: items.length === 20
         })
       },
-      fail: (err) => {
+      fail: () => wx.showToast({ title: '网络错误', icon: 'error' }),
+      complete: () => {
+        this.setData({ isLoading: false })
         wx.hideLoading()
-        console.error('请求订单失败', err)
-        wx.showToast({ title: '网络错误', icon: 'error' })
       }
     })
   },
 
-  goDetail(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({
-      url: `/pages/order-detail/order-detail?id=${id}`
-    })
+  toggleExpand(e) {
+    const index = e.currentTarget.dataset.index
+    const key = `orders[${index}].expanded`
+    const current = this.data.orders[index].expanded
+    this.setData({ [key]: !current })
   },
 
-  formatTime(isoString) {
-    if (!isoString) return '未知时间'
-    const date = new Date(isoString)
-    const now = new Date()
-    const diff = now - date
+  goDetail(e) {
+    const id = e.currentTarget.dataset.id
+    wx.navigateTo({ url: `/pages/order-detail/order-detail?order_id=${id}` })
+  },
 
-    if (diff < 60000) return '刚刚'
-    if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前'
-    if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前'
-
-    return date.toLocaleString('zh-CN', {
-      month: 'numeric',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).replace('/', '月').replace(' ', '日 ')
+  formatTime(iso) {
+    if (!iso) return ''
+    const d = new Date(iso)
+    return `${d.getMonth()+1}月${d.getDate()}日 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
   }
 })

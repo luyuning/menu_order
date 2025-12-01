@@ -1,29 +1,29 @@
-<!-- pages/order-list/order-list.wxml -->
-<view class="container">
-  <view class="header">最近30笔订单</view>
+<view class="page">
+  <view class="header">我的订单</view>
 
-  <view class="list">
-    <block wx:for="{{orderList}}" wx:key="id">
-      <view class="order-item" bindtap="goDetail" data-id="{{item.id}}">
-        <view class="left">
-          <view class="no">订单号：{{item.order_no}}</view>
-          <view class="time">{{item.create_time}}</view>
-          <view class="status {{item.status}}">{{item.status === 'pending' ? '待处理' : '已完成'}}</view>
+  <scroll-view scroll-y class="list-container">
+    <block wx:for="{{orders}}" wx:key="order_id">
+      <view class="order-card" bindtap="goDetail" data-id="{{item.order_id}}">
+        <view class="top">
+          <text class="order-id">订单 {{item.order_id}}</text>
+          <text class="time">{{formatTime(item.create_time)}} 下单</text>
         </view>
-        <view class="right">
-          <view class="total">¥{{item.total_amount}}</view>
-          <view class="count">{{item.dish_count}}道菜</view>
-          <text class="arrow">></text>
+
+        <view class="dishes">
+          <text wx:for="{{item.dish_names.slice(0,3)}}" wx:key="*this" class="tag">{{item}}</text>
+          <view wx:if="{{item.dish_names.length > 3}}" class="more" bindtap="toggleExpand" data-index="{{index}}" stopPropagation>
+            {{item.expanded ? '收起' : '展开其余 '+(item.dish_names.length-3)+' 道菜'}} {{item.expanded ? '↑' : '↓'}}
+          </view>
         </view>
+
+        <view wx:if="{{item.expanded}}" class="extra">
+          <text wx:for="{{item.dish_names.slice(3)}}" wx:key="*this" class="tag">{{item}}</text>
+        </view>
+
+        <text class="arrow">></text>
       </view>
     </block>
 
-    <!-- 空状态 -->
-    <view wx:if="{{orderList.length === 0}}" class="empty">
-      暂无订单记录～快去点菜吧！
-    </view>
-  </view>
-
-  <!-- 下拉刷新 -->
-  <view class="load-more" wx:if="{{hasMore}}">下拉加载更多...</view>
+    <view wx:if="{{orders.length===0}}" class="empty">暂无订单</view>
+  </scroll-view>
 </view>

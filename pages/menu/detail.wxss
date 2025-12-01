@@ -1,1 +1,26 @@
-/* pages/menu/detail.wxss */
+/* 只改菜单页 —— 抹茶绿温柔版 */
+page { background: #fdfdf9; }
+
+/* 菜名、分类标题 */
+.dish-name,
+.item-name,
+.category title,
+.section-title text {
+  color: #555555 !important;
+  font-weight: 500 !important;
+}
+
+/* 价格改成抹茶绿 */
+.price,
+.dish-price,
+.money {
+  color: #8fb39a !important;
+  font-weight: 600 !important;
+}
+
+/* 描述文字、标签等变浅灰 */
+.desc,
+.tag,
+.tip {
+  color: #aaaaaa !important;
+}

@@ -107,5 +107,10 @@ Page({
         })
     })
 
+},
+goToMenu() {
+  wx.switchTab({
+    url: '/pages/menu/menu'
+  })
 }
 })

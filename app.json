@@ -1,7 +1,7 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/menu/list",
+    "pages/menu/menu",
     "pages/cart/cart",
     "pages/order-list/order-list"
   ],
@@ -17,13 +17,7 @@
     "backgroundColor": "#ffffff",
     "list": [
       {
-        "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "/images/tabbar/home.png",
-        "selectedIconPath": "/images/tabbar/home_active.png"
-      },
-      {
-        "pagePath": "pages/menu/list",
+        "pagePath": "pages/menu/menu",
         "text": "菜单",
         "iconPath": "/images/tabbar/menu.png",
         "selectedIconPath": "/images/tabbar/menu_active.png"

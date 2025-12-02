@@ -1,53 +1,56 @@
-// app.js   ← 完整正确版，直接全选替换！
+// app.js —— 终极一份制专用版（已适配你当前真实逻辑）
 App({
-  globalData: {
-    // 可以留着备用，后面购物车页面会用
-  },
+  globalData: {},
 
-  // ================== 加入购物车核心方法 ==================
+  // 加入购物车（一份制：同菜不会重复，只会提示已加入）
   addToCart(dish) {
     let cart = wx.getStorageSync('cart') || []
     const exist = cart.find(item => item.id === dish.id)
     
     if (exist) {
-      exist.count += 1
-    } else {
-      cart.push({
-        id: dish.id,
-        name: dish.name,
-        img: dish.img || '',
-        price: dish.price || 0,
-        count: 1
+      wx.showToast({
+        title: '已加入购物车',
+        icon: 'none'
       })
+      return
     }
+
+    cart.push({
+      id: dish.id,
+      name: dish.name,
+      image: dish.image || dish.img || '',
+      price: dish.price || 0
+      // 一份制不需要 count 字段！
+    })
     
     wx.setStorageSync('cart', cart)
     wx.showToast({ title: '加入成功', icon: 'success' })
     this.updateCartBadge()
   },
 
-  // 更新 tabBar 小红点（菜单页是第 1 个 tab，从 0 数是 index: 1）
+  // 更新购物车角标 —— 一份制专用：直接显示菜品数量（长度）
   updateCartBadge() {
-    let cart = wx.getStorageSync('cart') || []
-    let total = cart.reduce((sum, item) => sum + item.count, 0)
+    const cart = wx.getStorageSync('cart') || []
+    const total = cart.length   // 一份制就用 length！
+
     if (total > 0) {
       wx.setTabBarBadge({
-        index: 1,                 // 改成你菜单页在 tabBar 里的位置（从0数第2个就是1）
+        index: 1,               // 改成 1！！！购物车是第 2 个 tab（从 0 开始数）
         text: total + ''
       })
     } else {
-      wx.removeTabBarBadge({ index: 1 })
+      wx.removeTabBarBadge({
+        index: 1                  // 也必须是 1！统一！
+      })
     }
   },
 
-  // ================== 生命周期 ==================
   onLaunch() {
-    // 小程序启动时就更新一次小红点
     this.updateCartBadge()
   },
 
   onShow() {
-    // 每次回到小程序也刷新一下（防止从别的页面回来看不到最新数量）
     this.updateCartBadge()
   }
+
 })

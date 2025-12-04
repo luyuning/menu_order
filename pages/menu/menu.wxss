@@ -1,31 +1,341 @@
-.menu-container { padding: 20rpx 20rpx 140rpx; background: #fdf9f5; }
-.dish-card {
-  background: white; margin-bottom: 40rpx; border-radius: 32rpx;
-  overflow: hidden; box-shadow: 0 10rpx 30rpx rgba(212,56,13,0.1);
+.menu-container {
+  padding: 120rpx 30rpx 160rpx;
+  background: #fdf9f5
 }
-.dish-img { width: 100%; height: 480rpx; }
-.dish-content { padding: 30rpx; }
+
+.fixed-tabs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #ffe0d6;
+  z-index: 999
+}
+
+.tabs-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 50rpx
+}
+
+.tab-item {
+  padding: 0 36rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+  font-size: 34rpx;
+  color: #999;
+  border-radius: 40rpx;
+  font-weight: 500
+}
+
 .dish-name {
-  font-size: 48rpx; font-weight: bold; color: #D4380D;
-  margin-bottom: 30rpx; text-align: center;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #D4380D;
+  text-align: center;
+  margin-bottom: 30rpx
 }
-.section-title {
-  font-size: 36rpx; color: #D4380D; padding: 20rpx 0;
-  border-top: 1rpx solid #fee; position: relative;
-}
-.arrow { position: absolute; right: 0; transition: all 0.3s; font-size: 40rpx; }
-.arrow.up { transform: rotate(90deg); }
-.section-content {
-  font-size: 32rpx; line-height: 1.6; color: #555; padding: 20rpx 0 40rpx;
-  white-space: pre-wrap;
-}
-.method-text { color: #8B4513; }
+
 .add-btn {
-  width: 100%; height: 100rpx; background: #D4380D; color: white;
-  font-size: 40rpx; border-radius: 50rpx; margin-top: 20rpx;
+  width: 100%;
+  height: 100rpx;
+  background: #D4380D;
+  color: white;
+  font-size: 40rpx;
+  border-radius: 50rpx;
+  margin-top: 20rpx
 }
+
+/* 搜索框外观：圆角、轻微阴影、水平居中显示 */
+.search-box {
+  position: relative;
+  height: 64rpx;
+  max-width: 820rpx;
+  /* 在大屏上不至于太长 */
+  margin: 0 auto;
+  /* 水平居中 */
+  background: #fafafa;
+  border-radius: 36rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4rpx 18rpx rgba(0, 0, 0, 0.06);
+  padding: 0 24rpx;
+  border: 1rpx solid rgba(0, 0, 0, 0.04);
+}
+
+
+/* 清除按钮（小叉） */
+.search-box .clear-btn {
+  position: absolute;
+  right: 12rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 28rpx;
+  background: rgba(0, 0, 0, 0.04);
+  font-size: 26rpx;
+  color: #333;
+  line-height: 56rpx;
+  text-align: center;
+  padding: 0;
+  border: none;
+}
+
+/* 在小程序里 button 可能带默认样式，重置些 */
+.search-box .clear-btn:active {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.fixed-tabs {
+  width: 100%;
+  background: white;
+  padding: 12rpx 0;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.03);
+}
+
+.tabs-container {
+  max-width: 1000rpx;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 20rpx;
+}
+
+/* Tab 样式 */
+.tab-item {
+  font-size: 28rpx;
+  color: #666;
+  padding: 8rpx 18rpx;
+  border-radius: 20rpx;
+}
+
+.tab-item.active {
+  color: #fff;
+  background: linear-gradient(90deg, #FF7A18 0%, #FF5A5F 100%);
+  box-shadow: 0 6rpx 18rpx rgba(255, 90, 95, 0.12);
+}
+
+/* 菜品卡片样式（微调，让页面更美观）*/
+.dish-card {
+  background: #fff;
+  margin: 18rpx 20rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.dish-content {
+  padding: 20rpx;
+}
+
+.dish-name {
+  font-size: 30rpx;
+  color: #222;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+/* 折叠标题 */
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 26rpx;
+  color: #444;
+  padding: 10rpx 0;
+  cursor: pointer;
+}
+
+
+.arrow {
+  font-size: 22rpx;
+  transform: rotate(0deg);
+  transition: transform 160ms ease;
+}
+
+.arrow.up {
+  transform: rotate(90deg);
+}
+
+.section-content {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 36rpx;
+  padding: 8rpx 0 18rpx 0;
+}
+
+.add-btn {
+  display: inline-block;
+  margin-top: 10rpx;
+  padding: 12rpx 20rpx;
+  border-radius: 12rpx;
+  background: linear-gradient(90deg, #FF7A18, #FF5A5F);
+  color: #fff;
+  font-size: 28rpx;
+  border: none;
+}
+
 .cart-badge {
-  position: fixed; right: 50rpx; bottom: 200rpx; background: #ff3838;
-  color: white; min-width: 50rpx; height: 50rpx; line-height: 50rpx;
-  border-radius: 50%; text-align: center; font-size: 32rpx; z-index: 999;
+  position: fixed;
+  right: 32rpx;
+  bottom: 120rpx;
+  min-width: 44rpx;
+  height: 44rpx;
+  line-height: 44rpx;
+  text-align: center;
+  background: #FF3B30;
+  color: #fff;
+  border-radius: 22rpx;
+  padding: 0 10rpx;
+  box-shadow: 0 8rpx 20rpx rgba(255, 59, 48, 0.2);
+  z-index: 999;
+}
+
+/* 空状态提示 */
+.empty-tip {
+  text-align: center;
+  color: #999;
+  padding: 80rpx 0;
+  font-size: 28rpx;
+}
+
+/* 外层包裹，居中 + 轻微分割空间 */
+.search-wrap {
+  width: 100%;
+  padding: 26rpx 32rpx 20rpx;
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+/* “磨砂 + 光晕边” 的搜索框容器 */
+.search-box {
+  position: relative;
+  height: 72rpx;
+  max-width: 820rpx;
+  margin: 0 auto;
+  padding: 0 30rpx;
+  border-radius: 36rpx;
+
+  /* 高级感来自渐变边 + 半透明背景 */
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16rpx);
+
+  /* 柔和边界光晕 */
+  border: 1rpx solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    0 4rpx 18rpx rgba(0, 0, 0, 0.05),
+    0 0 0 6rpx rgba(255, 255, 255, 0.5) inset;
+
+  display: flex;
+  align-items: center;
+}
+
+
+/* 输入框 */
+.search-input {
+  flex: 1;
+  height: 72rpx;
+  line-height: 72rpx;
+  text-align: center;
+  font-size: 30rpx;
+  color: #222;
+  background: transparent;
+  border: none;
+}
+
+/* placeholder */
+.search-input::placeholder {
+  color: #bfbfbf;
+}
+
+/* 清除按钮 */
+.clear-btn {
+  position: absolute;
+  right: 22rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+  background: rgba(0, 0, 0, 0.08);
+  font-size: 26rpx;
+  line-height: 48rpx;
+  text-align: center;
+  color: #666;
+  border: none;
+}
+
+.clear-btn:active {
+  background: rgba(0, 0, 0, 0.16);
+}
+
+/* 搜索框放最上面 */
+.search-wrap {
+  width: 100%;
+  padding: 26rpx 32rpx 20rpx;
+  box-sizing: border-box;
+  background: #ffffff;
+  z-index: 1000;
+  /* 保证在最上层 */
+}
+
+/* 搜索框样式 */
+.search-box {
+  position: relative;
+  height: 72rpx;
+  max-width: 820rpx;
+  margin: 0 auto;
+  padding: 0 30rpx;
+  border-radius: 36rpx;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 4rpx 18rpx rgba(0, 0, 0, 0.05), 0 0 0 6rpx rgba(255, 255, 255, 0.5) inset;
+  display: flex;
+  align-items: center;
+}
+
+
+/* 输入框 */
+.search-input {
+  flex: 1;
+  height: 72rpx;
+  line-height: 72rpx;
+  text-align: center;
+  font-size: 30rpx;
+  color: #222;
+  background: transparent;
+  border: none;
+}
+
+.search-input::placeholder {
+  color: #bfbfbf;
+}
+
+/* 清除按钮 */
+.clear-btn {
+  position: absolute;
+  right: 22rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+  background: rgba(0, 0, 0, 0.08);
+  font-size: 26rpx;
+  line-height: 48rpx;
+  text-align: center;
+  color: #666;
+  border: none;
+}
+
+.clear-btn:active {
+  background: rgba(0, 0, 0, 0.16)
 }

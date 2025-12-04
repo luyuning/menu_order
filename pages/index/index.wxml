@@ -1,6 +1,7 @@
 <view class="home-container">
   <view class="welcome-text">
     <!-- 艺术字标题 -->
+    <text class="title art-text">亲爱的老婆</text>
     <text class="title art-text">今天想吃点什么呢</text>
     <!-- 艺术字副标题 -->
     <text class="subtitle art-subtitle">已经等不及要点餐了吧</text>

@@ -2,28 +2,40 @@
   <view class="header">我的订单</view>
 
   <scroll-view scroll-y class="list-container">
-    <block wx:for="{{orders}}" wx:key="order_id">
-      <view class="order-card" bindtap="goDetail" data-id="{{item.order_id}}">
-        <view class="top">
-          <text class="order-id">订单 {{item.order_id}}</text>
-          <text class="time">{{formatTime(item.create_time)}} 下单</text>
-        </view>
+    <view wx:for="{{orders}}" wx:key="order_id" class="order-card">
 
-        <view class="dishes">
-          <text wx:for="{{item.dish_names.slice(0,3)}}" wx:key="*this" class="tag">{{item}}</text>
-          <view wx:if="{{item.dish_names.length > 3}}" class="more" bindtap="toggleExpand" data-index="{{index}}" stopPropagation>
-            {{item.expanded ? '收起' : '展开其余 '+(item.dish_names.length-3)+' 道菜'}} {{item.expanded ? '↑' : '↓'}}
+      <view class="top">
+        <!-- 关键：日期 + 订单号 -->
+        <text class="order-id">
+          <text wx:if="{{item.order_date}}" class="date-prefix">
+            {{item.order_date}}
+          </text>
+          订单 {{item.order_id}}
+        </text>
+
+
+
+        <view class="time-wrapper">
+          <text class="time">{{formatTime(item.create_time)}}</text>
+          <view wx:if="{{item.dish_names.length > 3}}" 
+                class="expand-toggle" 
+                bindtap="toggleExpand" 
+                data-index="{{index}}">
+            {{item.expanded ? '收起' : '展开'}}
           </view>
         </view>
-
-        <view wx:if="{{item.expanded}}" class="extra">
-          <text wx:for="{{item.dish_names.slice(3)}}" wx:key="*this" class="tag">{{item}}</text>
-        </view>
-
-        <text class="arrow">></text>
       </view>
-    </block>
 
-    <view wx:if="{{orders.length===0}}" class="empty">暂无订单</view>
+      <view class="dishes">
+        <text wx:for="{{item.dish_preview}}" wx:key="*this" class="tag">{{item}}</text>
+      </view>
+
+      <view wx:if="{{item.expanded}}" class="extra">
+        <text wx:for="{{item.dish_tail}}" wx:key="*this" class="tag">{{item}}</text>
+      </view>
+
+    </view>
+
+    <view wx:if="{{orders.length === 0}}" class="empty">暂无订单</view>
   </scroll-view>
 </view>

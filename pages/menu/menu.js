@@ -2,22 +2,17 @@ const app = getApp()
 
 Page({
   data: {
-    // 原始完整菜谱（从后端拉取并做备份用于搜索恢复）
     fullDishList: [],
-    // 当前用于渲染的列表（搜索时使用，正常分类浏览时保持 fullDishList）
     dishList: [],
-    // 按分类分好的菜单，用于页面按分类渲染 groupedMenu[currentCat]
     groupedMenu: {},
-    // 所有分类
-    categories: [],
-    // 当前分类
+    categories: [],        // ← 这里以后永远是我们定义好的顺序
     currentCat: '',
-    // 购物车计数
     cartCount: 0,
-    // 搜索输入
     searchQuery: '',
-    // 防抖定时器 id
-    searchTimer: null
+    searchTimer: null,
+
+    // 新增：我们人为规定的分类顺序（改顺序只改这里就行）
+    categoryOrder: ['荤菜', '素菜', '主食', '汤水']
   },
 
   onLoad() {
@@ -45,14 +40,49 @@ Page({
       },
       success: res => {
         const raw = res.data || []
-        const list = raw.map(item => Object.assign({}, item, {
-          id: item.id != null ? item.id : (item._id || item.uuid || (Math.random() * 1e9 | 0)),
-          showIngredients: false,
-          showMethod: false
-        }))
+        // const list = raw.map(item => Object.assign({}, item, {
+        //   id: item.id != null ? item.id : (item._id || item.uuid || (Math.random() * 1e9 | 0)),
+        //   showIngredients: false,
+        //   showMethod: false
+        // }))
+
+
+
+
+        const list = raw.map(item => {
+          const obj = Object.assign({}, item, {
+            id: item.id != null ? item.id : (item._id || item.uuid || (Math.random() * 1e9 | 0)),
+            showIngredients: false,
+            showMethod: false
+          })
+        
+          // ★ 关键：提前把 cooking_method 按句号切成数组
+          if (obj.cooking_method) {
+            obj.methodLines = obj.cooking_method
+              .split(/[\u3002\uFF0E.]/)   // 支持中文句号、英文句号
+              .map(s => s.trim())
+              .filter(s => s)             // 过滤空行
+          } else {
+            obj.methodLines = []
+          }
+        
+          return obj
+        })
+
+
+
+
+
+
+
+
+
+
+
+
 
         this.setData({ fullDishList: list }, () => {
-          this.groupAndSet(list)
+          this.groupAndSet(list)   // 按自定义顺序重新分组+排序
           wx.hideLoading()
         })
       },
@@ -63,27 +93,42 @@ Page({
     })
   },
 
-  // 将传入 list 按 category 分组，并设置相关 data
+  // 核心修改：按 categoryOrder 强制排序
   groupAndSet(list) {
     const grouped = {}
+    const orderMap = {}
+    this.data.categoryOrder.forEach((cat, idx) => {
+      orderMap[cat] = idx           // 用于后面排序
+      grouped[cat] = []             // 先占位，确保顺序里有的分类一定存在（即使暂时没菜）
+    })
+
+    // 把所有菜品归类
     list.forEach(d => {
       const cat = d.category || '其他'
       if (!grouped[cat]) grouped[cat] = []
       grouped[cat].push(d)
     })
 
-    const cats = Object.keys(grouped)
-    const current = this.data.currentCat || (cats[0] || '')
+    // 取出我们希望的顺序（包含“其他”分类也会被排到最后）
+    const orderedCats = this.data.categoryOrder.concat(
+      Object.keys(grouped).filter(cat => !this.data.categoryOrder.includes(cat))
+    )
+
+    // 当前选中分类：如果之前选中的还在，就继续；否则取第一个
+    let current = this.data.currentCat
+    if (!current || !orderedCats.includes(current)) {
+      current = orderedCats[0] || ''
+    }
 
     this.setData({
       dishList: list,
       groupedMenu: grouped,
-      categories: cats,
+      categories: orderedCats,      // ← 这里就是最终渲染顺序
       currentCat: current
     })
   },
 
-  // 切换分类
+  // 切换分类（保持不变）
   switchCategory(e) {
     const cat = e.currentTarget.dataset.cat
     if (!cat) return
@@ -93,31 +138,7 @@ Page({
     })
   },
 
-  // ========== 搜索相关 ==========
-  onSearchInput(e) {
-    const q = (e.detail && e.detail.value) ? e.detail.value.trim() : ''
-    this.setData({ searchQuery: q })
-
-    if (this.data.searchTimer) {
-      clearTimeout(this.data.searchTimer)
-      this.setData({ searchTimer: null })
-    }
-    this.data.searchTimer = setTimeout(() => {
-      this.performSearch(q)
-      this.setData({ searchTimer: null })
-    }, 300)
-  },
-
-  onSearchConfirm(e) {
-    const q = (e.detail && e.detail.value) ? e.detail.value.trim() : ''
-    if (this.data.searchTimer) {
-      clearTimeout(this.data.searchTimer)
-      this.setData({ searchTimer: null })
-    }
-    this.setData({ searchQuery: q })
-    this.performSearch(q)
-  },
-
+  // ========== 搜索相关（只需要把 groupAndSet 换成我们新写的即可）==========
   clearSearch() {
     this.setData({ searchQuery: '' })
     this.groupAndSet(this.data.fullDishList || [])
@@ -149,16 +170,15 @@ Page({
       return
     }
 
-    this.groupAndSet(filtered)
-    const cats = Object.keys(this.data.groupedMenu)
-    this.setData({ currentCat: cats[0] || '' })
+    this.groupAndSet(filtered)   // 搜索结果也严格按我们顺序排列
   },
 
-  // ========== 折叠逻辑 ==========
+  // 其余代码（折叠、加购物车、更新角标等）全部保持原样不动
+  // ========= 以下代码完全复制您原来的即可 =========
   toggleSection(e) {
     const idRaw = e.currentTarget.dataset.id
-    const id = String(idRaw)                 // 统一转字符串，防止类型不一致
-    const type = e.currentTarget.dataset.type // 'ingredients' | 'method'
+    const id = String(idRaw)
+    const type = e.currentTarget.dataset.type
     const cat = this.data.currentCat
     if (!cat) return
 
@@ -175,7 +195,6 @@ Page({
 
     this.setData({ [`groupedMenu.${cat}`]: newList })
 
-    // 同步 fullDishList（保持备份一致）
     const fullIdx = this.data.fullDishList.findIndex(d => String(d.id) === id)
     if (fullIdx !== -1) {
       const key = type === 'ingredients' ? 'showIngredients' : 'showMethod'
@@ -183,25 +202,19 @@ Page({
     }
   },
 
-  // ========== 加入购物车（关键修复）==========
   addToCart(e) {
     const idRaw = e.currentTarget.dataset.id
-    const id = String(idRaw)   // 统一转字符串，彻底杜绝类型问题
+    const id = String(idRaw)
 
     let dish = null
-
-    // 1. 优先从当前正在渲染的分类里找（最准确、最常用）
     const currentCatList = (this.data.groupedMenu && this.data.currentCat)
       ? this.data.groupedMenu[this.data.currentCat] || []
       : []
     dish = currentCatList.find(d => String(d.id) === id)
 
-    // 2. 没找到再从完整备份里找
     if (!dish) {
       dish = this.data.fullDishList.find(d => String(d.id) === id)
     }
-
-    // 3. 再兜底（基本不会走到这里）
     if (!dish) {
       dish = this.data.dishList.find(d => String(d.id) === id)
     }
@@ -211,10 +224,8 @@ Page({
       return
     }
 
-    // 深拷贝，防止污染原数据
     const toAdd = { ...dish, quantity: (dish.quantity || 0) + 1 }
 
-    // 加入购物车（兼容 app.addToCart 方法和 globalData 两种方式）
     if (typeof app.addToCart === 'function') {
       app.addToCart(toAdd)
     } else {
@@ -232,10 +243,34 @@ Page({
     wx.showToast({ title: '已加入购物车', icon: 'success', duration: 600 })
   },
 
-  // 更新购物车角标
   updateCartCount() {
     const cart = (app.globalData && app.globalData.cart) ? app.globalData.cart : []
     const count = cart.reduce((s, i) => s + (i.quantity || 0), 0)
     this.setData({ cartCount: count })
+  },
+
+  // 搜索输入防抖保持不变
+  onSearchInput(e) {
+    const q = (e.detail && e.detail.value) ? e.detail.value.trim() : ''
+    this.setData({ searchQuery: q })
+
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer)
+      this.setData({ searchTimer: null })
+    }
+    this.data.searchTimer = setTimeout(() => {
+      this.performSearch(q)
+      this.setData({ searchTimer: null })
+    }, 300)
+  },
+
+  onSearchConfirm(e) {
+    const q = (e.detail && e.detail.value) ? e.detail.value.trim() : ''
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer)
+      this.setData({ searchTimer: null })
+    }
+    this.setData({ searchQuery: q })
+    this.performSearch(q)
   }
 })

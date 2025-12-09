@@ -339,3 +339,14 @@
 .clear-btn:active {
   background: rgba(0, 0, 0, 0.16)
 }
+.method-text {
+  padding: 10rpx 0 6rpx !important;
+  line-height: 1.35 !important;
+  font-size: 27rpx !important;
+  color: #333;
+}
+
+.method-line {
+  display: block !important;
+  margin-bottom: 3rpx !important;
+}

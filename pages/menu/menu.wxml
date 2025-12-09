@@ -33,15 +33,31 @@
           </view>
 
           <!-- 制作方法 -->
+          <!-- <view class="section">
+            <view class="section-title" bindtap="toggleSection" data-id="{{item.id}}" data-type="method">
+              制作方法 <text class="arrow {{item.showMethod ? 'up' : 'down'}}" style="pointer-events:none;">></text>
+            </view> -->
+          <!-- ↓ 这一行也必须加回来 -->
+          <!-- <view class="section-content method-text" wx:if="{{item.showMethod}}">
+              {{item.cooking_method || '大火爆炒，香到你哭！'}}
+            </view>
+          </view> -->
+          <!-- 制作方法（按句号换行展示） -->
           <view class="section">
             <view class="section-title" bindtap="toggleSection" data-id="{{item.id}}" data-type="method">
               制作方法 <text class="arrow {{item.showMethod ? 'up' : 'down'}}" style="pointer-events:none;">></text>
             </view>
-            <!-- ↓ 这一行也必须加回来 -->
+
             <view class="section-content method-text" wx:if="{{item.showMethod}}">
-              {{item.cooking_method || '大火爆炒，香到你哭！'}}
+              <block wx:if="{{item.methodLines && item.methodLines.length > 0}}">
+                <text wx:for="{{item.methodLines}}" wx:key="*this" class="method-line">
+                  {{index + 1}}. {{item}}\n
+                </text>
+              </block>
+              <text wx:else>大火爆炒，香到你哭！</text>
             </view>
           </view>
+
 
           <button class="add-btn" bindtap="addToCart" data-id="{{item.id}}">+ 加入购物车</button>
         </view>
